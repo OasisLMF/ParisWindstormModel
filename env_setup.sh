@@ -25,7 +25,7 @@ sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
 # allow docker to run without sudo
-sudo groupadd docker
+# sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker 
 
@@ -43,7 +43,7 @@ sudo apt install -y python3-pip
 # set aliases for python and pip
 echo "alias python='python3'" >> ~/.bashrc
 echo "alias pip='pip3'" >> ~/.bashrc
-source .bashrc
+source ~/.bashrc
 
 # install oasislmf package and dependencies
 sudo apt install -y libspatialindex-dev
@@ -55,7 +55,7 @@ PATH=$PATH:~/.local/bin
 
 # enable oasislmf autocomplete
 oasislmf admin enable-bash-complete -y
-
+source ~/.bashrc
 
 
 

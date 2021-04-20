@@ -36,14 +36,19 @@ class ParisWindstormKeysLookup(OasisBaseKeysLookup):
             output_directory
         )
 
+        self.df_ap_dict=pd.read_csv(os.path.join(keys_data_directory,'areaperil_dict.csv'))
+        self.df_vuln_dict=pd.read_csv(os.path.join(keys_data_directory,'vulnerability_dict.csv'))
+
     def get_areaperil(self,loc_df):
-        loc_df['areaperil_id'] = 1
+        loc_df = loc_df.merge(self.df_ap_dict,how='left')
+        loc_df['areaperil_id'].fillna(0)
         loc_df['ap_status'] = OASIS_KEYS_STATUS['success']['id']
         loc_df['ap_message'] = ''
         return loc_df
 
     def get_vulnerbaility(self,loc_df):
-        loc_df['vulnerability_id'] = 1
+        loc_df = loc_df.merge(self.df_vuln_dict,how='left')
+        loc_df['vulnerability_id'].fillna(0)
         loc_df['v_status'] = OASIS_KEYS_STATUS['success']['id']
         loc_df['v_message'] = ''
         return loc_df
