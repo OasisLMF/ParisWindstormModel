@@ -1,0 +1,28 @@
+version: '3'
+services:
+  paris_windstorm_worker:
+    image: coreoasis/model_worker_paris_windstorm:1.15.6
+    links:
+     - celery-db
+     - rabbit:myrabbit
+    environment:
+     - OASIS_MODEL_SUPPLIER_ID=OasisLMF
+     - OASIS_MODEL_ID=ParisWindstorm
+     - OASIS_MODEL_VERSION_ID=1
+     - OASIS_RABBIT_HOST=rabbit
+     - OASIS_RABBIT_PORT=5672
+     - OASIS_RABBIT_USER=rabbit
+     - OASIS_RABBIT_PASS=rabbit
+     - OASIS_CELERY_DB_ENGINE=db+mysql+pymysql
+     - OASIS_CELERY_DB_HOST=celery-db
+     - OASIS_CELERY_DB_PASS=password
+     - OASIS_CELERY_DB_USER=celery
+     - OASIS_CELERY_DB_NAME=celery
+     - OASIS_CELERY_DB_PORT=3306
+     - OASIS_OASISLMF_CONFIG=/home/worker/oasislmf.json
+     - OASIS_KEEP_RUN_DIR=True
+    volumes:
+     - /docker-shared-fs:/shared-fs:rw
+     - ../model_data:/var/oasis/model_data:rw
+     - ../keys_data:/var/oasis/keys_data:rw
+
