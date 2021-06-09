@@ -79,7 +79,8 @@ class ParisWindstormKeysLookup(OasisBaseKeysLookup):
                     "coverage_type": coverage,
                     "area_peril_id": ap_id,
                     "vulnerability_id": v_id,
-                    "status": status
+                    "status": status,
+                    "message": ''
                 }
             else:
                 yield {
