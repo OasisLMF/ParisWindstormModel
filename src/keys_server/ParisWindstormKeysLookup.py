@@ -88,8 +88,38 @@ class ParisWindstormKeysLookup(KeyLookupInterface):
         loc_df['v_message'] = ''
         return loc_df
 
+    @staticmethod
+    def _package_dataframe(data_frame: DataFrame) -> DataFrame:
+        """
+        Packages the dataframe to be exported or written converting columns to numeric, adding new columns based on
+        outcomes and trimming columns that are not needed.
+
+        @param data_frame: (DataFrame) the dataframe to be packaged
+        @return: (Dataframe) the packaged dataframe
+        """
+        status = OASIS_KEYS_STATUS['success']['id']
+
+        # convert to numeric
+        data_frame["loc_id"] = pd.to_numeric(data_frame["loc_id"])
+        data_frame["areaperil_id"] = pd.to_numeric(data_frame["areaperil_id"])
+        data_frame["vulnerability_id"] = pd.to_numeric(data_frame["vulnerability_id"])
+
+        # define new fields
+        data_frame["peril_id"] = "WTC"
+        data_frame["coverage_type"] = 1
+        data_frame["status"] = status
+        data_frame["message"] = ''
+
+        if OASIS_KEYS_STATUS['success']['id'] == OASIS_KEYS_STATUS['success']['id']:
+            data_frame.rename(columns={'areaperil_id': 'area_peril_id'}, inplace=True)
+            data_frame = data_frame[['loc_id', 'peril_id', 'coverage_type', 'area_peril_id',
+                                     'vulnerability_id', 'status', 'message']]
+        else:
+            data_frame = data_frame[['loc_id', 'peril_id', 'coverage_type', 'message', 'status']]
+        return data_frame
+
     @oasis_log()
-    def process_locations(self, loc_df: DataFrame) -> Dict[str, Any]:
+    def process_locations(self, loc_df: DataFrame) -> DataFrame:
         """
         A generator that produces a row from the area peril data and vulnerabilities.
 
@@ -99,33 +129,5 @@ class ParisWindstormKeysLookup(KeyLookupInterface):
         loc_df.columns = map(str.lower, loc_df.columns)
         loc_df: DataFrame = self.get_areaperil(loc_df)
         loc_df: DataFrame = self.get_vulnerbaility(loc_df)
-
-        for _, loc in loc_df.iterrows():
-
-            loc_id = int(loc['loc_id'])
-            peril = 'WTC'
-            coverage = 1
-            ap_id = int(loc['areaperil_id'])
-            v_id = int(loc['vulnerability_id'])
-            status = OASIS_KEYS_STATUS['success']['id']
-            message = ''
-
-            if status == OASIS_KEYS_STATUS['success']['id']:
-                yield {
-                    "loc_id": loc_id,
-                    "peril_id": peril,
-                    "coverage_type": coverage,
-                    "area_peril_id": ap_id,
-                    "vulnerability_id": v_id,
-                    "status": status,
-                    "message": ''
-                }
-            else:
-                yield {
-                    "loc_id": loc_id,
-                    "peril_id": peril,
-                    "coverage_type": coverage,
-                    "message": message,
-                    "status": status
-                }
-
+        loc_df: DataFrame = self._package_dataframe(data_frame=loc_df)
+        return loc_df
