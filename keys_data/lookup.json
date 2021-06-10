@@ -1,0 +1,42 @@
+{
+    "model": {
+        "supplier_id": "OasisLMF",
+        "model_id": "ParisWindStorm",
+        "model_version": "0.0.0.1"
+    },
+    "lookup_module_path": "../src/keys_server/ParisWindstormKeysLookup.py",
+    "keys_data_path": "./",
+    "step_definition": {
+        "split_loc_perils_covered":{
+            "type": "split_loc_perils_covered" ,
+            "columns": ["locperilscovered"],
+            "parameters": {
+                "model_perils_covered": ["WTC"]
+            }
+        },
+        "set_default": {
+            "type": "prepare",
+            "parameters": { "coverage_type": {"default": 1, "type": "i8"}}
+        },
+        "set_geoloc_join": {
+            "type": "set_geoloc_join",
+            "columns": ["latitude", "longitude"]
+        },
+        "peril":{
+            "type": "merge",
+            "columns": ["lat_join", "lon_join"],
+            "parameters": {
+                "file_path": "%%KEYS_DATA_PATH%%/areaperil_dict.csv",
+                "id_columns": ["area_peril_id"]
+            }
+        },
+        "vulnerability": {
+            "type": "merge",
+            "columns": ["constructioncode"],
+            "parameters": {"file_path": "%%KEYS_DATA_PATH%%/vulnerability_dict.csv",
+                           "id_columns": ["vulnerability_id"]
+                          }
+        }
+    },
+    "strategy": ["split_loc_perils_covered", "set_default", "set_geoloc_join", "peril", "vulnerability"]
+}
