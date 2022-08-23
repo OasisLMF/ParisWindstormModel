@@ -1,7 +1,7 @@
 version: '3'
 services:
   paris_windstorm_worker:
-    image: coreoasis/model_worker_paris_windstorm:1.15.6
+    image: coreoasis/model_worker_paris_windstorm:1.26.2
     links:
      - celery-db
      - rabbit:myrabbit

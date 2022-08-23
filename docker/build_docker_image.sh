@@ -1,4 +1,4 @@
-sudo docker build -f Dockerfile.paris_windstorm_worker -t paris_windstorm_worker.1_26_2 .
+sudo docker build -f Dockerfile.paris_windstorm_worker -t coreoasis/model_worker_paris_windstorm:1.26.2 .
 
 sudo docker network create shiny-net
 
